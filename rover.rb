@@ -15,11 +15,10 @@
 # need to figure out from here is how to read and split up the instructions so that you
 # can pass them on to your rovers.
 
-$max_x=5
-$max_y=5
 
 class Rover
-  attr_reader :x, :y, :direction
+  attr_reader :x_postition, :y_position, :heading
+  attr_accessor :move_commands
 
   def initialize(x_position, y_position, heading)
     @x_position = x_position
@@ -28,26 +27,22 @@ class Rover
   end
 
 
-  def read_instruction(rover_instructions)
-      rover_instructions.each do |dir|
+  def read_instruction(instructions_string)
+      move_commands=instructions_string.split("")
+      move_commands.each do |dir|
 
-        if dir == 'l' || dir =='r'
+        if dir == 'l' || dir == 'r'
           turn(dir)
-        end
-
-        if dir =='m'
+        elsif dir == 'm'
           move
         end
-
       end
-
   end
 
 
 
   def move
     case @heading
-
     when 'N'
       @y_position+=1
     when 'E'
@@ -60,48 +55,52 @@ class Rover
   end
 
   def turn(dir)
-    case @heading
-
-    when 'N'
-      if dir =='l'
-         @heading= 'W'
-      else
-         @heading= 'E'
-      end
-    when 'E'
-      if dir == 'l'
+    if dir =='l'
+      case @heading
+      when 'N'
+        @heading= 'W'
+      when 'E'
         @heading= 'N'
-      else
-        @heading= 'S'
-      end
-    when 'S'
-      if dir == 'l'
+      when 'S'
         @heading= 'E'
-      else
-       @heading= 'W'
+      when 'W'
+        @heading = 'S'
       end
-    when 'W'
-      if dir == 'l'
-       @heading = 'S'
-      else
-       @heading = 'W'
-      end
+    elsif dir == 'r'
+      case @heading
+      when 'N'
+        @heading='E'
+      when 'E'
+        @heading='S'
+      when 'S'
+        @heading= 'W'
+      when 'W'
+        @heading= 'N'
+        end
     end
   end
 end
 
-  puts "Define the area of your plateau:"
-  plateau=gets.chomp
-
-  puts "Enter your x,y and heading for Rover 1:"
-  rover1_position=gets.chomp.upcase
-
-  puts "Enter your instructions for Rover 1 (L/R/M-Left/Right/Move):"
-  rover1_instructions=gets.chomp.downcase
-
-  data = rover1_position.split(" ")
-
-  rover_instructions = rover1_instructions.split(" ")
-  rover1=Rover.new(data[0],data[1],data[2])
-
-  rover1.read_instruction(rover_instructions)
+# class MissionControl
+#
+# def initialize
+#
+# end
+#
+#   # puts "Define the area of your plateau:"
+#   # plateau=gets.chomp
+#
+#   puts "Enter your x,y and heading for Rover 1:"
+#   $rover1_position=gets.chomp.upcase
+#
+#   puts "Enter your instructions for Rover 1 (L/R/M-Left/Right/Move):"
+#   $rover1_instructions=gets.chomp.downcase
+#
+#   @data = $rover1_position.split(" ")
+#
+#   $rover_instructions = $rover1_instructions.split(" ")
+#
+#     rover1=Rover.new(@data[0],@data[1],@data[2])
+#
+#   return rover1.read_instruction(rover_instructions)
+# end
