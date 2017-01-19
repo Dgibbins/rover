@@ -19,107 +19,89 @@ $max_x=5
 $max_y=5
 
 class Rover
-attr_reader :x, :y, :direction
+  attr_reader :x, :y, :direction
 
-def initialize(x_position, y_position, direction)
-  @x_position = x_position
-  @y_position = y_position
-  @direction = direction
-end
+  def initialize(x_position, y_position, heading)
+    @x_position = x_position
+    @y_position = y_position
+    @heading = heading
+  end
 
 
   def read_instruction(rover_instructions)
-      rover_instructions.each do
+      rover_instructions.each do |dir|
 
-        if 'l' || 'r'
-          turn
+        if dir == 'l' || dir =='r'
+          turn(dir)
         end
 
-        if 'm'
+        if dir =='m'
           move
         end
 
       end
-        return "Position is #{@x_position}, #{@y_position}, #{@direction}"
+
   end
 
 
 
   def move
+    case @heading
 
     when 'N'
       @y_position+=1
+    when 'E'
+      @x_position+=1
+    when 'S'
+      @y_position-=1
+    when 'W'
+      @x_position-=1
     end
-
-      when 'E'
-        @x_position+=1
-      end
-
-        when 'S'
-          @y_position-=1
-        end
-
-          when 'W'
-            @x_position-=1
-          end
   end
 
-  def turn
+  def turn(dir)
+    case @heading
 
     when 'N'
-      if 'l'
-         @direction= 'W'
-        else
-         @direction= 'E'
+      if dir =='l'
+         @heading= 'W'
+      else
+         @heading= 'E'
       end
-    end
-
     when 'E'
-      if l
-         @direction= 'N'
-        else
-         @direction= 'S'
+      if dir == 'l'
+        @heading= 'N'
+      else
+        @heading= 'S'
       end
-    end
-
     when 'S'
-      if 'l'
-         @direction= 'E'
-       else
-         @direction= 'W'
+      if dir == 'l'
+        @heading= 'E'
+      else
+       @heading= 'W'
+      end
+    when 'W'
+      if dir == 'l'
+       @heading = 'S'
+      else
+       @heading = 'W'
       end
     end
-
-      when 'W'
-        if 'l'
-           @direction = 'S'
-         else
-           @direction= 'W'
-        end
-      end
   end
+end
 
   puts "Define the area of your plateau:"
   plateau=gets.chomp
 
   puts "Enter your x,y and heading for Rover 1:"
-  rover1_position=gets.chomp
+  rover1_position=gets.chomp.upcase
 
   puts "Enter your instructions for Rover 1 (L/R/M-Left/Right/Move):"
-  rover1_instructions=gets.chomp
+  rover1_instructions=gets.chomp.downcase
 
-  # puts "Enter your x,y and heading for Rover 2:"
-  # rover2_position=gets.chomp
-  #
-  # puts "Enter your instructions for Rover 2 (L/R/M-Left/Right/Move):"
-  # rover2_instructions=gets.chomp
+  data = rover1_position.split(" ")
 
-  data_position = rover1_position.split(" ")
-
-  data_instructions= rover1_instructions.split(" ")
-
-  rover_instructions = data_instructions.downcase
-
+  rover_instructions = rover1_instructions.split(" ")
   rover1=Rover.new(data[0],data[1],data[2])
 
   rover1.read_instruction(rover_instructions)
