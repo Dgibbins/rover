@@ -1,36 +1,17 @@
-# # Next up we'll need to think about behaviour. Behaviours have the ability to
-# read and affect the state of an object. We express those as methods.
-# #
-# # read_instruction should accept an instruction and decide whether to tell the
-# rover to move or turn. It simply delegates to more specific behaviour.
-# #
-# # move affects the position of the rover. Depending on current direction and
-# position, you'll need to update the x or y coordinates.
-# #
-# # turn affects the direction of the rover. Depending on the current direction
-#  of the rover, the new direction will be determined with either turning L or R.
-# #
-# # Once you've figured out how to move and turn your rover, the rest gets much
-# easier because you got the seemingly complex stuff out of the way first! All you'll
-# need to figure out from here is how to read and split up the instructions so that you
-# can pass them on to your rovers.
-
-
 class Rover
-  attr_reader :x_postition, :y_position, :heading
-  attr_accessor :move_commands
+  attr_reader :x_position, :y_position, :heading
+  attr_accessor :read_instruction
 
   def initialize(x_position, y_position, heading)
-    @x_position = x_position
-    @y_position = y_position
-    @heading = heading
+    @x_position = x_position.to_i
+    @y_position = y_position.to_i
+    @heading = heading.to_s
   end
 
 
-  def read_instruction(instructions_string)
-      move_commands=instructions_string.split("")
-      move_commands.each do |dir|
-
+  def read_instruction(instruction_string)
+      commands=instruction_string.split("")
+      commands.each do |dir|
         if dir == 'l' || dir == 'r'
           turn(dir)
         elsif dir == 'm'
@@ -38,8 +19,6 @@ class Rover
         end
       end
   end
-
-
 
   def move
     case @heading
@@ -55,52 +34,54 @@ class Rover
   end
 
   def turn(dir)
-    if dir =='l'
+    if dir == 'l'
       case @heading
       when 'N'
-        @heading= 'W'
+        @heading = 'W'
       when 'E'
-        @heading= 'N'
+        @heading = 'N'
       when 'S'
-        @heading= 'E'
+        @heading = 'E'
       when 'W'
         @heading = 'S'
       end
     elsif dir == 'r'
       case @heading
       when 'N'
-        @heading='E'
+        @heading ='E'
       when 'E'
-        @heading='S'
+        @heading ='S'
       when 'S'
-        @heading= 'W'
+        @heading = 'W'
       when 'W'
-        @heading= 'N'
+        @heading = 'N'
         end
     end
   end
 end
 
-# class MissionControl
-#
-# def initialize
-#
-# end
-#
-#   # puts "Define the area of your plateau:"
-#   # plateau=gets.chomp
-#
-#   puts "Enter your x,y and heading for Rover 1:"
-#   $rover1_position=gets.chomp.upcase
-#
-#   puts "Enter your instructions for Rover 1 (L/R/M-Left/Right/Move):"
-#   $rover1_instructions=gets.chomp.downcase
-#
-#   @data = $rover1_position.split(" ")
-#
-#   $rover_instructions = $rover1_instructions.split(" ")
-#
-#     rover1=Rover.new(@data[0],@data[1],@data[2])
-#
-#   return rover1.read_instruction(rover_instructions)
-# end
+class MissionControl
+
+  def initialize
+  end
+
+  def rover_instructions(inst, rover)
+      rover.read_instruction(inst)
+  end
+
+  def report(rover)
+      "#{rover.x_position}x,#{rover.y_position}y, #{rover.heading}"
+  end
+end
+
+
+mc=MissionControl.new
+rover1=Rover.new(1,2,"N")
+rover2=Rover.new(3,3,"E")
+mc.rover_instructions("lmlmlmlmm",rover1)
+mc.rover_instructions("mmrmmrmrrm",rover2)
+
+mc.report(rover1)
+mc.report(rover2)
+puts "Rover 1:#{mc.report(rover1)}"
+puts "Rover 2:#{mc.report(rover2)}"
